@@ -1,0 +1,15 @@
+# Imports go at the top
+from microbit import *
+
+while True:
+    accel_x, accel_y, accel_z = accelerometer.get_values()
+    temp = temperature()
+    light = display.read_light_level()
+
+    combined = "{},{},{},{},{}\n".format(accel_x,accel_y,accel_z,temp,light)
+
+    if not uart.any(): # if the buffer is empty
+        # display.scroll("Transmitting")
+        uart.write(combined)
+    
+    sleep(1000)

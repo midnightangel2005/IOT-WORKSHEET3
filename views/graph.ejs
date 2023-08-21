@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%- type %> Graph</title>
+    <script src="/public/plotly-2.25.2.min.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <main id="graph"></main>
+
+    <script>
+      const data = <%- data %>;
+      const type = "<%- type %>";
+    </script>
+
+    <script>
+      function pascalCase(str) {
+        return str
+          .split(/_\s/g)
+          .map((s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
+          .join(" ");
+      }
+
+      let val = [];
+
+      // let mode = "lines";
+      // let mode = "markers";
+      let mode = "lines+markers";
+
+      if (type === "PINS") {
+        val.push(
+          ["touch_pin1", "touch_pin2", "touch_pin3"].map((p, i) =>
+            Object({
+              x: data.map((d) => new Date(d[0]).getTime()),
+              y: data.map((d) => d[i + 1]),
+              type: "scatter",
+              mode,
+            })
+          )
+        );
+      } else {
+        val.push(
+          Object({
+            x: data.map((d) => new Date(d[0]).getTime()),
+            y: data.map((d) => d[1]),
+            type: "scatter",
+            mode,
+          })
+        );
+      }
+
+      Plotly.newPlot(document.getElementById("graph"), val, {
+        title: "<%- type %> Graph",
+        xaxis: {
+          autorange: true,
+          type: "date",
+          title: "Time",
+        },
+        yaxis: {
+          title: pascalCase(type),
+        },
+      });
+    </script>
+  </body>
+</html>
